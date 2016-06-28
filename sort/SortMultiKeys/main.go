@@ -14,21 +14,27 @@ type CustomItem struct {
 type lessFunc func(p1, p2 *CustomItem) bool // less的封装，方便对自定义结构所有字段进行比较
 
 // 针对多字段排序的类型封装，又此类型来实现sort.Interface的三个接口方法
-type MutiSorter struct {
+type MultiSorter struct {
 	items	    []CustomItem
 	less        []lessFunc
 }
 
+func NewMultiSorter(its []CustomItem, less ...lessFunc) *MultiSorter {
+	return &MultiSorter{
+		items: its,
+		less: less,
+	}
+}
 // Sort sorts the argument slice according to the less functions passed to OrderedBy.
-func (ms *MutiSorter) Sort(its []CustomItem) {
+func (ms *MultiSorter) Sort(its []CustomItem) {
 	ms.items = its
 	sort.Sort(ms)
 }
 
 // OrderedBy returns a Sorter that sorts using the less functions, in order.
 // Call its Sort method to sort the data.
-func OrderedBy(less ...lessFunc) *MutiSorter {
-	return &MutiSorter{
+func OrderedBy(less ...lessFunc) *MultiSorter {
+	return &MultiSorter{
 		less: less,
 	}
 }
@@ -48,15 +54,15 @@ type Interface interface {
 	Swap(i, j int)
 }
 */
-func (ms *MutiSorter) Len() int {
+func (ms *MultiSorter) Len() int {
 	return len(ms.items)
 }
 
-func (ms *MutiSorter) Swap(i, j int) {
+func (ms *MultiSorter) Swap(i, j int) {
 	ms.items[i], ms.items[j] = ms.items[j], ms.items[i]
 }
 
-func (ms *MutiSorter) Less(i, j int) bool {
+func (ms *MultiSorter) Less(i, j int) bool {
 	p, q := &ms.items[i], &ms.items[j]
 	var k int
 	for k = 0; k < len(ms.less) - 1; k++ {
@@ -105,5 +111,10 @@ func main() {
 	fmt.Println(testItems)
 	OrderedBy(name, level).Sort(testItems)
 	fmt.Println("Sort by name & level:")
+	fmt.Println(testItems)
+
+	mt := NewMultiSorter(testItems, age, level)
+	sort.Sort(sort.Reverse(mt))
+	fmt.Println("Sort by age & level, reverse sort!")
 	fmt.Println(testItems)
 }
