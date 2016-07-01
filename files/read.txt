@@ -1,0 +1,43 @@
+golang官方Blog推荐文章
+<Working with Files in Go>
+网址：http://www.devdungeon.com/content/working-files-go
+
+提供如下内容：
+
+    Intro
+        Everything is a File
+    Basic Operations
+        Create Empty File
+        Truncate a File
+        Get File Info
+        Rename and Move a File
+        Delete Files
+        Open and Close Files
+        Check if File Exists
+        Check Read and Write Permissions
+        Change Permissions, Ownership, and Timestamps
+        Create Hard Links and Symlinks
+    Reading and Writing
+        Copy a File
+        Seek Positions in File
+        Write Bytes to a File
+        Quick Write to File
+        Use Buffered Writer
+        Read up to n Bytes from File
+        Read Exactly n Bytes
+        Read At Least n Bytes
+        Read All Bytes of File
+        Quick Read Whole File to Memory
+        Use Buffered Reader
+        Read with a Scanner
+    Archiving(Zipping)
+        Archive(Zip) Files
+        Extract(Unzip) Archived Files
+    Compressing
+        Compress a File
+        Uncompress a File
+    Misc
+        Temporary Files and Directories
+        Downloading a File Over HTTP
+        Hashing and Checksums
+
