@@ -1,0 +1,25 @@
+7. 模板的预定义全局函数例子[texttp/ex5.ttp]:
+and/or/not/len/index/print/printf/println/html/urlquery/js/call
+{{/* 执行模板时，函数从两个函数字典中查找：首先是模板函数字典，然后是全局函数字典。
+一般不在模板内定义函数，而是使用Funcs方法添加函数到模板里。 */}}
+and: {{$x := true}} {{$y := "y"}} {{and $x $y}} {{/* {{and x y}}表示：if x then y else x, 如果x为真，返回y，否则返回x。 此行返回 y */}}
+and: {{$x := false}} {{$y := "y"}} {{and $x $y}} {{/* $x等于false，返回$x的值 */}}
+{{range $k, $v := .Mux}} {{$k}}=>{{call $v "test" 4}} {{end}} {{/* {{call .X.Y 1 2}} 表示：dot.X.Y(1, 2) call后面的第一个参数的结果必须
+                                                                   是一个函数（即这是一个函数类型的值），其余参数作为该函数的参数。该函数必须
+                                                                   返回一个或两个结果值，其中第二个结果值是error类型。如果传递的参数与函数定义
+                                                                   的不匹配或返回的error值不为nil，则停止执行。 */}}
+{{html `<html> <body> <h1>Title</h1> <p>这是段落</p> </body> </html>` }} {{/* 转义文本中的html标签，如将“<”转义为“&lt;”，“>”转义为“&gt;”等 */}}
+{{index .SS 0}} {{index .SS 0 3}} {{index .SS 1 0}} {{/* {{index x 1 2 3}} 返回index后面的第一个参数的某个索引对应的元素值，
+                                                    其余的参数为索引值 表示：x[1][2][3],x必须是一个map、slice或数组 */}}
+{{index .IntMap 3}} {{/* map[int]string, 索引key为int类型的map例子 */}}
+{{js `<script type="text/javascript">
+           document.write(escape("Visit W3School!") + "<br />")
+           document.write(escape("?!=()#%&"))
+           </script>`}}  {{/* 返回用JavaScript的escape函数编码处理后的文本 */}}
+{{len .SS}} {{len .IntMap}} {{index .SS 0 | len}} {{/* 返回参数的长度值（int类型） */}}
+{{not $x}} {{not .SS}} {{/* 返回单一参数的布尔否定值，参数可以是bool、指针、interface等等类型 */}}
+{{or $x $y}} {{/* {{or x y}} 表示：if x then x else y。等同于Golang中的：x || y, 如果x为真返回x，否则返回y */}}
+{{print $x}} {{/* fmt.Sprint的别名 */}}
+{{printf $y}} {{/* fmt.Sprintf的别名 */}}
+{{println "test"}} {{/* fmt.Sprintln的别名 */}}
+{{urlquery `http://www.baidu.com/?id=1001&name=mike&age=23`}} {{/* 返回适合在URL查询中嵌入到形参中的文本转义值 */}}

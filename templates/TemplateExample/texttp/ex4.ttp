@@ -1,0 +1,8 @@
+6. 嵌套结构成员遍历和外层结构字段访问例子[texttp/ex4.ttp]:
+{{range $i, $v := .Items}}                   {{/* 遍历Container结构体的Items切片 */}}
+    Item {{$i}}:{{range $i, $v := .Slic}}    {{/* 遍历每个Item元素(结构体SlicWrap)的Slic切片 */}}
+        Slic {{$i}}: => {{.}} + {{$.Name}}   {{/* 访问每个Slic切片元素值，同时打印最外层结构体Container的字段Name的值，
+                                             需要访问外层结构字段时，在外部字段名称前加符号“$”即可，单独的“$”意义等同于global(最外层结构体) */}}
+        {{end}}
+{{end}}
+

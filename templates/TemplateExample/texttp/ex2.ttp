@@ -1,0 +1,37 @@
+2. pipeline和变量例子[texttp/ex2.ttp]：
+在模板中定义变量：变量名称用字母和数字组成，并带上“$”前缀，采用符号“:=”进行赋值。
+比如：{{`{{$x := "OK"}}`}} 或 {{`{{$x := pipeline}}`}}
+{{"\"1output\""}} {{/* 1. 字符串常量 */}}
+{{`"2output"`}} {{/* 2. 原始字符串常量 */}}
+{{printf "%q" "3output"}} {{/* 3. 函数调用, %q 带双引号的字符串"abc"或带单引号的字符'c'*/}}
+模板全局打印函数(print/printf/println){{/* print是fmt.Sprint的别名;  printf是fmt.Sprintf的别名; println是fmt.Sprintln的别名;  */}}
+{{"4output" | printf "%q"}} {{/* 4. 函数调用，使用管道，最后一个参数来自前一个command的返回值,  */}}
+{{printf "%q" (print "5out" "put")}} {{/* 5. 加括号的参数, 圆括号中表达式的整体结果作为printf函数的参数。等同于：printf("%q", print("out", "put")) */}}
+{{"put" | printf "%s%s" "6out" | printf "%q"}} {{/* 6. 一个更复杂的调用. (等同于：printf("%q", printf("%s%s", "out", "put")) */}}
+{{"7output" | printf "%s" | printf "%q"}} {{/* 7. 管道的链式调用, 等同于：printf("%q", printf("%s", "output")) */}}
+{{with "8output"}}{{printf "%q" .}}{{end}} {{/* {{with pipeline}} T1 {{end}} with后面pipeline的值如果非空,则赋给dot,并走到 T1 位置(dot表示当前对象的值). pipeline为
+ 空，则dot的值不被设置，也不输出任何内容 */}}
+{{with $x := "9output" | printf "%q"}}{{$x}}{{end}} {{/* with结构，定义变量x，值为执行管道函数之后的结果,等同于：$x := printf("%q", "output"). {{$x}}和{{.}}等价 */}}
+{{with $x := "10output"}}{{printf "%q" $x}}{{end}} {{/* with结构中，在其它动作中使用定义的变量,这里{{printf "%q" $x}}也和{{printf "%q" .}}等价 */}}
+{{with $x := "11output"}}{{$x | printf "%q"}}{{end}} {{/* 同上，但使用了管道。等同于：printf("%q", "output"). {{$x}}和{{.}}等价 */}}
+-------------------------------------------
+{{$z := "OK"}} 变量z的值 {{with $z}} {{.}} {{end}} {{/* {{.}} 表示输出当前对象的值 */}}
+
+3. 条件判断例子[texttp/ex2.ttp]:
+{{if $z}} {{printf "T1"}} {{end}} {{/* {{if pipeline}} T1 {{end}} 若pipeline为空,没有输出,否则T1位置执行(当前对象dot不受影响),空值是false, 0, 空指针或interface, 以及长度为0的字符串、数组、切片、map。 */}}
+{{$b := false}} {{if $b}} {{printf "T1"}} {{end}} {{/* if条件不满足，无输出 */}}
+{{if $z}} {{printf "T1"}} {{else}} {{printf "T0"}} {{end}} {{/* {{if pipeline}} T1 {{else}} T0 {{end}}, 走 T1 位置 */}}
+{{if $b}} {{printf "T1"}} {{else}} {{printf "T0"}} {{end}} {{/* 走 T0 位置 */}}
+{{if $z}} {{printf "T1"}} {{else if "output"}} {{printf "T0"}} {{end}} {{/* {{if pipeline}} T1 {{else if pipeline}} T0 {{end}}, 走 T1 位置 */}}
+{{if $b}} {{printf "T1"}} {{else if "output"}} {{printf "T0"}} {{end}} {{/* 字符串"output"长度不为0, 走 T0 位置 */}}
+
+4. 嵌入子模板例子[texttp/ex2.ttp]:
+{{define "T1"}}ONE{{end}} {{/* 使用子模板前需要用{{define "name"}}子模板内容{{end}}先定义好子模板, 定义T1子模板 */}}
+{{define "T2"}} TWO+{{.}} {{end}} {{/* 定义T2子模板，子模板可以包含action, 此行例子中dot当前对象值为空 */}}
+{{define "T3"}}{{template "T1"}} {{template "T2"}} {{.}}{{end}} {{/* 定义T3子模板 */}}
+{{template "T3"}} {{/* 运行T3子模板, dot值为空 */}}
+{{template "T2" "test" | printf}} {{/* {{template "name" pipeline}},以带参数形式运行子模板,pipeline的值会先设置给dot当前对象，
+在此子模板中引用{{.}}即可得到pipeline的值 */}}
+{{template "T3" "Hello T3"}} {{/* 从这个例子输出可以看到，T3的参数不会传递到其内嵌的次级子模板T2.输出：ONE  TWO+<no value>  Hello T3 */}}
+
+

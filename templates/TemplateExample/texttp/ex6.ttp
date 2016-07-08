@@ -1,0 +1,14 @@
+8. 全局预定义二进制比较操作符函数例子[texttp/ex6.ttp]:
+eq/ne/lt/le/gt/ge {{/* 布尔函数对于任何零值返回false，非零值返回true。 */}}
+{{if eq .Name "Kate"}} eq return true {{end}} {{/* 返回表达式“arg1 == arg2”的布尔值, eq常和if条件判断语句配合使用 */}}
+{{if ne .Name "Kate"}} ne return true {{else}} ne return false {{end}} {{/* 返回表达式“arg1 != arg2”的布尔值 */}}
+{{.Value}} < 8 {{lt .Value 8}} {{/* 返回表达式“arg1 < arg2”的布尔值 */}}
+{{.Value}} <= 9 {{le .Value 9}} {{/* 返回表达式“arg1 <= arg2”的布尔值 */}}
+{{.Value}} > 8 {{gt .Value 8}} {{/* 返回表达式“arg1 > arg2”的布尔值 */}}
+{{.Value}} >= 9 {{ge .Value 9}} {{/* 返回表达式“arg1 >= arg2”的布尔值 */}}
+{{/* 对于简单的多路相等测试，eq只接受两个参数进行比较，后面其它的参数将分别依次与第一个参数进行比较，
+     {{eq arg1 arg2 arg3 arg4}}
+     即只能作如下比较：
+     arg1==arg2 || arg1==arg3 || arg1==arg4 ... */}}
+{{eq .Value 8 8}} {{/* .Value == 8 两次结果都是false，最终结果的值是false */}}
+{{eq .Value 9 8}} {{/* .Value == 9结果是true, .Value == 8结果是false，最终结果是 || 起来的值，是true */}}

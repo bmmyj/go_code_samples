@@ -1,0 +1,8 @@
+5. range遍历例子[texttp/ex3.ttp]:
+{{range .Slic}} {{.}} {{end}} {{/* pipeline 必须是array、切片、map或者channel, 如果pipeline的length为0,则什么都不输出,否则,dot会被依次置为对应元素,且走T1位置 */}}
+{{range $i, $sv := .Slic}} {{$i}}=>{{$sv}}; {{end}} {{/* 遍历切片的位置索引和对应的值 */}}
+{{range .Mapp}} {{printf .}} ; {{end}} {{/* 遍历打印map的值 */}}
+{{range $k, $v := .Mapp}} {{$k}} => {{$v}};{{end}} {{/* 遍历map的key和val */}}
+{{range .Ch}} {{.}} {{end}} {{/*  遍历同步channel的例子 */}}
+{{range .Empty}} {{printf "T1"}} {{else}} {{printf "T0"}} {{end}} {{/* 当没有可遍历的值时，将执行else部分。 */}}
+
